@@ -1,6 +1,6 @@
 {
   "name": "Dealdeck Hubspot App",
-  "uid": "dealdeck-hub-app",
+  "uid": "dealdeck-hubspot-app",
   "description": "A Dealdeck Hubspot App",
   "logo": "./assets/logo.png",
   "auth": {
@@ -20,6 +20,6 @@
     }
   },
   "support": {
-    "supportEmail": "info@dealdeck.com"
+    "supportEmail": "support@dealdeck.com"
   }
 }
