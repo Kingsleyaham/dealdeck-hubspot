@@ -1,0 +1,21 @@
+{
+  "type": "crm-card",
+  "data": {
+    "title": "DealDeck Card",
+    "description": "DealDeck Card Summary",
+    "uid": "dealsdeck_summary_card",
+    "location": "crm.record.sidebar",
+    "module": {
+      "file": "DealsCard.tsx"
+    },
+    "previewImage": {
+      "file": "assets/example-card-preview.png",
+      "altText": "DealDeck Preview Card"
+    },
+    "objectTypes": [
+      {
+        "name": "deals"
+      }
+    ]
+  }
+}
