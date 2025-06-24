@@ -1,0 +1,20 @@
+{
+  "name": "Dealdeck Hubspot App",
+  "uid": "dealdeck-hub-app",
+  "description": "A Dealdeck Hubspot App",
+  "logo": "./assets/logo.png",
+  "auth": {
+    "redirectUrls": ["http://localhost:3000/oauth-callback"],
+    "requiredScopes": [
+      "files",
+      "oauth",
+      "crm.objects.contacts.read",
+      "crm.objects.contacts.write",
+      "crm.objects.deals.read",
+      "crm.objects.deals.write"
+    ]
+  },
+  "support": {
+    "supportEmail": "info@dealdeck.com"
+  }
+}
