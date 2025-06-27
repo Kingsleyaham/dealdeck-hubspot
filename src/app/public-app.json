@@ -1,0 +1,25 @@
+{
+  "name": "Deck Main App",
+  "uid": "dealdeck-hubspot-app-kdkdkdk-kdkdk",
+  "description": "A Dealdeck Hubspot App that i am playing with",
+  "logo": "./assets/logo.png",
+  "allowedUrls": ["https://api.hubapi.com/crm/v3/owners/"],
+  "auth": {
+    "redirectUrls": ["http://localhost:3000/oauth-callback"],
+    "requiredScopes": [
+      "oauth",
+      "crm.objects.deals.read",
+      "crm.objects.deals.write",
+      "crm.objects.contacts.read",
+      "crm.objects.contacts.write",
+      "crm.objects.companies.read",
+      "crm.objects.companies.write",
+      "crm.objects.owners.read"
+    ]
+  },
+  "extensions": {
+    "crm": {
+      "cards": [{ "file": "./extensions/deals-card.json" }]
+    }
+  }
+}

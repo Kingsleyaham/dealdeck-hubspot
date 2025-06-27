@@ -1,0 +1,10 @@
+{
+  "name": "hubspot_app",
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "@hubspot/ui-extensions": "latest",
+    "dayjs": "^1.11.13",
+    "react": "^18.2.0"
+  }
+}
