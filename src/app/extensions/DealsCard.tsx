@@ -10,7 +10,6 @@ interface IProps {
 
 const DealsCard = ({ actions, fetchProperties, context }: IProps) => {
   const [currentDeal, setCurrentDeal] = useState<any>(null);
-  const [companyInfo, setCompanyInfo] = useState<any>(null);
   const [ownerInfo, setOwnerInfo] = useState<any>();
 
   console.log("actions", actions);
@@ -33,16 +32,6 @@ const DealsCard = ({ actions, fetchProperties, context }: IProps) => {
     try {
       const deal = await fetchProperties(["dealname", "amount", "hubspot_owner_id", "associatedcompanyid"], dealId);
       setCurrentDeal({ id: dealId, ...deal });
-
-      // Fetch company
-      const companyAssociations = await actions.fetchCrmObjectAssociations(dealId, "companies");
-      const associatedCompanyId = companyAssociations.results?.[0]?.to?.id;
-      if (associatedCompanyId) {
-        const company = await actions.fetchCrmObjectProperties(["name"], associatedCompanyId, "companies");
-        setCompanyInfo(company);
-      } else {
-        setCompanyInfo(null);
-      }
     } catch (error) {
       console.error("Error", error);
     }
@@ -59,7 +48,7 @@ const DealsCard = ({ actions, fetchProperties, context }: IProps) => {
         variant="secondary"
         type="button"
         size="sm"
-        overlay={<CreateDealDeckModal actions={actions} customer={ownerInfo} />}
+        overlay={<CreateDealDeckModal actions={actions} deal={currentDeal?.dealname} />}
       >
         Create Deck
       </Button>

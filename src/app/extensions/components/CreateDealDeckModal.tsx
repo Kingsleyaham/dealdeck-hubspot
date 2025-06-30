@@ -5,6 +5,7 @@ import { ICustomerInfo } from "../types/customer";
 interface IProps {
   actions: any;
   customer?: ICustomerInfo;
+  deal?: string;
 }
 
 const options = [
@@ -14,31 +15,27 @@ const options = [
   { label: "Kingsley Template", value: "kingsley template" },
 ];
 
-const CreateDealDeckModal = ({ actions, customer }: IProps) => {
+const CreateDealDeckModal = ({ actions, customer, deal }: IProps) => {
   const [template, setTemplate] = useState<string | null>(null);
   const [validationMessage, setValidationMessage] = useState("");
-  const [customerErrorMsg, setCustomerErrorMsg] = useState("");
-  const [websiteErrorMsg, setWebsiteErrorMsg] = useState("");
+  const [dealErrorMsg, setDealErrorMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
-  const [customerValid, setCustomerValid] = useState(true);
-  const [customerName, setCustomerName] = useState("");
-  const [website, setWebsite] = useState("");
-  const [websiteValid, setWebsiteValid] = useState(true);
+  const [dealValid, setDealValid] = useState(true);
+  const [dealName, setDealName] = useState("");
   const [formIsValid, setFormIsValid] = useState(false);
 
   useEffect(() => {
-    console.log("customer", customer);
-    setCustomerName(`${customer?.firstName} ${customer?.lastName}`);
-  }, [customer]);
+    setDealName(deal!);
+  }, [deal]);
 
   useEffect(() => {
-    if (website && customerName && template) {
+    if (dealName && template) {
       setFormIsValid(true);
       return;
     }
 
     setFormIsValid(false);
-  }, [website, customerName, template]);
+  }, [dealName, template]);
 
   return (
     <Modal id="create-dealdeck-modal" title="Create a DealDeck" width="md">
@@ -46,46 +43,25 @@ const CreateDealDeckModal = ({ actions, customer }: IProps) => {
         <Flex direction="column">
           <Form>
             <Input
-              label="Customer name"
+              label="Deal name"
               name="customerName"
-              placeholder="Enter customer name"
+              placeholder="Enter deal name"
               required
-              validationMessage={customerErrorMsg}
-              error={!customerValid}
+              validationMessage={dealErrorMsg}
+              error={!dealValid}
               onChange={(value) => {
-                setCustomerName(value);
+                setDealName(value);
               }}
               onInput={(value) => {
                 if (value === "") {
-                  setCustomerErrorMsg("Customer Name is required");
-                  setCustomerValid(false);
+                  setDealErrorMsg("Deal Name is required");
+                  setDealValid(false);
                 } else {
                   setValidationMessage("");
-                  setCustomerValid(true);
+                  setDealValid(true);
                 }
               }}
-              value={customerName}
-            ></Input>
-            <Input
-              label="Customer website"
-              name="website"
-              placeholder="Enter customer website"
-              required
-              validationMessage={websiteErrorMsg}
-              error={!websiteValid}
-              onChange={(value) => {
-                setWebsite(value);
-              }}
-              onInput={(value) => {
-                if (value === "") {
-                  setWebsiteErrorMsg("Customer Name is required");
-                  setWebsiteValid(false);
-                } else {
-                  setWebsiteErrorMsg("");
-                  setWebsiteValid(true);
-                }
-              }}
-              value={website}
+              value={dealName}
             ></Input>
 
             <Select
