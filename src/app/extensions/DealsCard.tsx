@@ -1,19 +1,19 @@
 import { Button, CrmContext, Flex, hubspot, Text } from "@hubspot/ui-extensions";
 import React, { useEffect, useState } from "react";
+import ConnectedDeckView from "./components/ConnectedDeckView";
 import CreateDealDeckModal from "./components/CreateDealDeckModal";
 
 interface IProps {
   actions: any;
   fetchProperties: any;
   context: CrmContext;
+  addAlert: any;
 }
 
-const DealsCard = ({ actions, fetchProperties, context }: IProps) => {
+const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
   const [currentDeal, setCurrentDeal] = useState<any>(null);
   const [ownerInfo, setOwnerInfo] = useState<any>();
-
-  console.log("actions", actions);
-  console.log("context", context);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     // Get the current deal ID from context
@@ -37,22 +37,26 @@ const DealsCard = ({ actions, fetchProperties, context }: IProps) => {
     }
   };
 
-  useEffect(() => {
-    console.log("current deal", currentDeal);
-  }, [currentDeal]);
-
   return (
-    <Flex direction="column" align="center" gap="medium">
-      <Text variant="bodytext">Create a Dealdeck from inside Hubspot to manage your deals</Text>
-      <Button
-        variant="secondary"
-        type="button"
-        size="sm"
-        overlay={<CreateDealDeckModal actions={actions} deal={currentDeal?.dealname} />}
-      >
-        Create Deck
-      </Button>
-    </Flex>
+    <>
+      {isConnected ? (
+        <ConnectedDeckView addAlert={addAlert} />
+      ) : (
+        <Flex direction="column" align="center" gap="medium">
+          <Text variant="bodytext">Create a shared DealDeck for your prospect and link it to this record</Text>
+          <Button
+            variant="primary"
+            type="button"
+            size="sm"
+            overlay={
+              <CreateDealDeckModal actions={actions} deal={currentDeal?.dealname} setIsConnected={setIsConnected} />
+            }
+          >
+            Create DealDeck
+          </Button>
+        </Flex>
+      )}
+    </>
   );
 };
 
@@ -61,5 +65,6 @@ hubspot.extend(({ actions, context }) => (
     actions={actions}
     fetchProperties={(actions as any).fetchCrmObjectProperties}
     context={context as CrmContext}
+    addAlert={(actions as any).addAlert}
   />
 ));

@@ -1,11 +1,20 @@
-import { Button, Flex, Form, Input, Modal, ModalBody, ModalFooter, Select } from "@hubspot/ui-extensions";
-import React, { useEffect, useState } from "react";
-import { ICustomerInfo } from "../types/customer";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  LoadingButton,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  Select,
+} from "@hubspot/ui-extensions";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface IProps {
   actions: any;
-  customer?: ICustomerInfo;
   deal?: string;
+  setIsConnected: Dispatch<SetStateAction<boolean>>;
 }
 
 const options = [
@@ -15,7 +24,7 @@ const options = [
   { label: "Kingsley Template", value: "kingsley template" },
 ];
 
-const CreateDealDeckModal = ({ actions, customer, deal }: IProps) => {
+const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
   const [template, setTemplate] = useState<string | null>(null);
   const [validationMessage, setValidationMessage] = useState("");
   const [dealErrorMsg, setDealErrorMsg] = useState("");
@@ -23,6 +32,7 @@ const CreateDealDeckModal = ({ actions, customer, deal }: IProps) => {
   const [dealValid, setDealValid] = useState(true);
   const [dealName, setDealName] = useState("");
   const [formIsValid, setFormIsValid] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setDealName(deal!);
@@ -36,6 +46,19 @@ const CreateDealDeckModal = ({ actions, customer, deal }: IProps) => {
 
     setFormIsValid(false);
   }, [dealName, template]);
+
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsConnected(true);
+      setIsSubmitting(true);
+    }, 1000);
+
+    setTimeout(() => {
+      actions.closeOverlay("create-dealdeck-modal");
+    }, 1500);
+  };
 
   return (
     <Modal id="create-dealdeck-modal" title="Create a DealDeck" width="md">
@@ -88,14 +111,15 @@ const CreateDealDeckModal = ({ actions, customer, deal }: IProps) => {
       </ModalBody>
       <ModalFooter>
         <Button onClick={() => actions.closeOverlay("create-dealdeck-modal")}>Cancel</Button>
-        <Button
-          variant="primary"
+        <LoadingButton
+          variant={isSubmitting ? "secondary" : "primary"}
           type="submit"
           disabled={!formIsValid}
-          onClick={() => actions.closeOverlay("create-dealdeck-modal")}
+          onClick={handleSubmit}
+          loading={isSubmitting}
         >
           Save
-        </Button>
+        </LoadingButton>
       </ModalFooter>
     </Modal>
   );
