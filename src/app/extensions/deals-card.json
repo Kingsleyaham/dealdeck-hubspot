@@ -1,7 +1,7 @@
 {
   "type": "crm-card",
   "data": {
-    "title": "DealDeck Hubspot Card",
+    "title": "DealDeck",
     "description": "DealDeck Card Summary",
     "uid": "dealsdeck_summary_card",
     "location": "crm.record.sidebar",

@@ -1,4 +1,4 @@
-import { Box, Button, Dropdown, Flex, Heading, Icon, Text } from "@hubspot/ui-extensions";
+import { Box, Button, Dropdown, Flex, Icon, Link, Text } from "@hubspot/ui-extensions";
 import React from "react";
 
 interface IProps {
@@ -32,11 +32,8 @@ const ConnectedDeckView = ({ addAlert }: IProps) => {
 
   return (
     <Flex direction="column" gap="sm">
-      <Flex direction="row" gap="xs" align="center" alignSelf="center">
-        <Heading>DealDeck</Heading>
-        <Button size="xs" variant="transparent" href={"https://www.dealdeck.ai/"}>
-          View DealDeck
-        </Button>
+      <Flex direction="row" gap="xs" align="center" alignSelf="center" justify="start">
+        <Link href={"https://www.dealdeck.ai/"}>View DealDeck&nbsp;</Link>
       </Flex>
       <Box>
         <Box>
