@@ -13,7 +13,7 @@ interface IProps {
 const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
   const [currentDeal, setCurrentDeal] = useState<any>(null);
   const [ownerInfo, setOwnerInfo] = useState<any>();
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     // Get the current deal ID from context

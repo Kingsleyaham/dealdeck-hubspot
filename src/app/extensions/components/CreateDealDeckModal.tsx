@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Form,
+  hubspot,
   Input,
   LoadingButton,
   Modal,
@@ -47,16 +48,30 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
     setFormIsValid(false);
   }, [dealName, template]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const url = "https://aware-deadly-lizard.ngrok-free.app/v1/hubspot";
+    const response = await hubspot.fetch(url, {
+      method: "GET",
+    });
+
+    console.log("Server response:", response.status);
+    try {
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.error("Failed to parse as json", err);
+    }
+
     setIsSubmitting(true);
 
     setTimeout(() => {
-      setIsConnected(true);
+      // setIsConnected(true);
       setIsSubmitting(true);
     }, 1000);
 
     setTimeout(() => {
       actions.closeOverlay("create-dealdeck-modal");
+      setIsSubmitting(false);
     }, 1500);
   };
 

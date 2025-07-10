@@ -3,7 +3,11 @@
   "uid": "dealdeck-hubspot-app-kdkdkdk-kdkdk",
   "description": "A Dealdeck Hubspot App",
   "logo": "./assets/logo.png",
-  "allowedUrls": ["https://api.hubapi.com/crm/v3/owners/"],
+  "allowedUrls": [
+    "https://api.hubapi.com/crm/v3/owners/",
+    "https://example.com",
+    "https://aware-deadly-lizard.ngrok-free.app/"
+  ],
   "auth": {
     "redirectUrls": ["http://localhost:3000/oauth-callback"],
     "requiredScopes": [
