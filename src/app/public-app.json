@@ -6,7 +6,8 @@
   "allowedUrls": [
     "https://api.hubapi.com/crm/v3/owners/",
     "https://example.com",
-    "https://aware-deadly-lizard.ngrok-free.app/"
+    "https://aware-deadly-lizard.ngrok-free.app",
+    "https://backend.dev.dealdeck.ai"
   ],
   "auth": {
     "redirectUrls": ["http://localhost:3000/oauth-callback"],

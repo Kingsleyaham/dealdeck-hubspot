@@ -1,6 +1,7 @@
 node_modules/
 target/
 dist/
+http/
 package-lock.json
 hubspot.config.yml
 .env*

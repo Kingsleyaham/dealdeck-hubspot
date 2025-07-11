@@ -5,39 +5,61 @@ import {
   hubspot,
   Input,
   LoadingButton,
+  logger,
   Modal,
   ModalBody,
   ModalFooter,
   Select,
 } from "@hubspot/ui-extensions";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
+import { IDeal, ITemplates } from "../types/card";
 
 interface IProps {
   actions: any;
-  deal?: string;
+  deal?: IDeal;
   setIsConnected: Dispatch<SetStateAction<boolean>>;
 }
 
-const options = [
-  { label: "My Template", value: "my Template" },
-  { label: "New Template", value: "new template" },
-  { label: "Base Template", value: "base template" },
-  { label: "Kingsley Template", value: "kingsley template" },
-];
-
 const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
   const [template, setTemplate] = useState<string | null>(null);
-  const [validationMessage, setValidationMessage] = useState("");
+  const [tempErrorMsg, setTempErrorMsg] = useState("");
   const [dealErrorMsg, setDealErrorMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [dealValid, setDealValid] = useState(true);
   const [dealName, setDealName] = useState("");
   const [formIsValid, setFormIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [templates, setTemplates] = useState<ITemplates[]>([]);
 
   useEffect(() => {
-    setDealName(deal!);
+    setDealName(deal?.dealname!);
   }, [deal]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const url = `${API_BASE_URL}/inward/api/hubspot/templates`;
+
+      try {
+        const response = await hubspot.fetch(url, {
+          method: "POST",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setTemplates(data.map((elem: any) => ({ label: elem.name, value: elem.id })));
+      } catch (error) {
+        setTempErrorMsg("Error fetching templates");
+        console.error("An error occurred: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (dealName && template) {
@@ -49,30 +71,40 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
   }, [dealName, template]);
 
   const handleSubmit = async () => {
-    const url = "https://aware-deadly-lizard.ngrok-free.app/v1/hubspot";
-    const response = await hubspot.fetch(url, {
-      method: "GET",
-    });
-
-    console.log("Server response:", response.status);
-    try {
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.error("Failed to parse as json", err);
-    }
-
+    const url = `${API_BASE_URL}/inward/api/hubspot/deck/create`;
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      // setIsConnected(true);
-      setIsSubmitting(true);
-    }, 1000);
+    try {
+      const response = await hubspot.fetch(url, {
+        method: "POST",
+      });
 
-    setTimeout(() => {
-      actions.closeOverlay("create-dealdeck-modal");
+      if (!response.ok) {
+        throw new Error(`An Error occurred creating deck`);
+      }
+
+      const data = await response.json();
+
+      actions.addAlert({
+        type: "success",
+        message: "DealDeck created successfully",
+      });
+
+      logger.info(data);
+
+      setTimeout(() => {
+        setIsConnected(true);
+        actions.closeOverlay("create-dealdeck-modal");
+      }, 1000);
+    } catch (err: any) {
+      actions.addAlert({
+        type: "danger",
+        message: "An Error Occurred creating deck",
+      });
+      logger.error(err.message);
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -95,7 +127,7 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
                   setDealErrorMsg("Deal Name is required");
                   setDealValid(false);
                 } else {
-                  setValidationMessage("");
+                  setTempErrorMsg("");
                   setDealValid(true);
                 }
               }}
@@ -108,18 +140,18 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
               tooltip="Select a template from prebuilt templates"
               required={true}
               error={!isValid}
-              validationMessage={validationMessage}
+              validationMessage={tempErrorMsg}
               value={template!}
               onChange={(value: any) => {
                 setTemplate(value);
                 if (!value) {
-                  setValidationMessage("Field is required");
+                  setTempErrorMsg("Field is required");
                   setIsValid(false);
                 } else {
                   setIsValid(true);
                 }
               }}
-              options={options}
+              options={templates}
             />
           </Form>
         </Flex>
