@@ -20,3 +20,11 @@ export interface IDeckView {
   lastEngagement: string;
   numberOfViews: string;
 }
+
+export interface IDealDeckData {
+  id: string;
+  name: string;
+  dealDeckOwner: string;
+  lastEngagement: null | string | Date;
+  numberOfViews: string;
+}

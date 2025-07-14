@@ -77,10 +77,20 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
     try {
       const response = await hubspot.fetch(url, {
         method: "POST",
+        body: {
+          dealId: deal?.id,
+          templateId: template,
+        },
       });
 
       if (!response.ok) {
-        throw new Error(`An Error occurred creating deck`);
+        const data = await response.json();
+
+        if (data.status === "PRECONDITION_FAILED" && data.errorCode === "VALIDATION_ERROR") {
+          throw new Error(data.message);
+        }
+
+        throw new Error("An Error Occurred creating deck");
       }
 
       const data = await response.json();
@@ -90,16 +100,13 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
         message: "DealDeck created successfully",
       });
 
-      logger.info(data);
-
       setTimeout(() => {
-        setIsConnected(true);
         actions.closeOverlay("create-dealdeck-modal");
       }, 1000);
     } catch (err: any) {
       actions.addAlert({
         type: "danger",
-        message: "An Error Occurred creating deck",
+        message: err.message,
       });
       logger.error(err.message);
     } finally {
