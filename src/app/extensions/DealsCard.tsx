@@ -28,6 +28,7 @@ const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
     if (dealId) {
       !currentDeal && fetchDealData(dealId);
       checkIfUserIsConnected(dealId);
+      fetchDealDeckData(dealId);
     }
   }, [context?.crm?.objectId]);
 
@@ -53,12 +54,8 @@ const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
 
       const data = await response.json();
       setHasIntegrated(true);
-      setAccount(data);
-
-      const dealDeckData = await fetchDealDeckData(dealId);
-      setDeckData(dealDeckData);
-
       setIsFetching(false);
+      setAccount(data);
     } catch (error) {
       setHasIntegrated(false);
       setIsFetching(false);
@@ -84,11 +81,11 @@ const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
       const data = await response.json();
 
       setIsConnected(true);
-
-      return data as IDealDeckData;
+      setDeckData(data);
     } catch (error) {
       logger.error(`An Error occurred ${error}`);
-      throw error;
+      console.error(error);
+      setIsConnected(false);
     }
   };
 
@@ -105,7 +102,13 @@ const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
       {!hasIntegrated ? (
         <NotIntegrated />
       ) : isConnected ? (
-        <ConnectedDeckView addAlert={addAlert} deckData={deckData} />
+        <ConnectedDeckView
+          addAlert={addAlert}
+          deckData={deckData}
+          fetchDealDeckData={fetchDealDeckData}
+          dealId={currentDeal?.id}
+          actions={actions}
+        />
       ) : (
         <Flex direction="column" align="center" gap="medium">
           <Text variant="bodytext">Create a shared DealDeck for your prospect and link it to this record</Text>
@@ -113,11 +116,10 @@ const DealsCard = ({ actions, fetchProperties, context, addAlert }: IProps) => {
             variant="primary"
             type="button"
             size="sm"
-            overlay={<CreateDealDeckModal actions={actions} deal={currentDeal} setIsConnected={setIsConnected} />}
+            overlay={<CreateDealDeckModal actions={actions} deal={currentDeal} fetchDealDeckData={fetchDealDeckData} />}
           >
             Create DealDeck
           </Button>
-          <Text>{currentDeal.id}</Text>
         </Flex>
       )}
     </>

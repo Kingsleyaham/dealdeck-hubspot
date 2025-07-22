@@ -1,3 +1,5 @@
-export const DECK_VIEW_URL = "https://dev.d1i8gtw7s4jtl.amplifyapp.com/en/app/deck/view";
+import { CLIENT_BASE_URL } from "./config";
+
+export const DECK_VIEW_URL = `${CLIENT_BASE_URL}/deck/view`;
 
 export const ERROR_CODE = {};

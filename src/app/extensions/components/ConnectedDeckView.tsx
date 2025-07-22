@@ -1,48 +1,92 @@
-import { Box, Button, Dropdown, Flex, Icon, Link, Text } from "@hubspot/ui-extensions";
+import { Box, Button, Dropdown, Flex, hubspot, Icon, Link, Text } from "@hubspot/ui-extensions";
 import React from "react";
+import { API_BASE_URL, CLIENT_BASE_URL } from "../config";
 import { DECK_VIEW_URL } from "../constants";
 import { IDealDeckData } from "../types/card";
-import { copyToClipboard, toTitleCase } from "../utils/helper";
+import { toTitleCase } from "../utils/helper";
 
 interface IProps {
   addAlert: any;
   deckData: IDealDeckData | null;
+  fetchDealDeckData: (dealId: number) => Promise<void>;
+  dealId: number;
+  actions?: any;
 }
 
-const ddOptions = [
-  {
-    label: "Analytics",
-    onClick: () => console.log({ message: "Analytics button clicked" }),
-  },
-  {
-    label: "Edit",
-    onClick: () => console.log({ message: "Edit buttons clicked" }),
-  },
-  {
-    label: "Delete",
-    onClick: () => console.log({ message: "Delete button clicked" }),
-  },
-];
-
-const ConnectedDeckView = ({ addAlert, deckData }: IProps) => {
+const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, actions }: IProps) => {
   const handleCopyShareLink = async () => {
     const copyText = `${DECK_VIEW_URL}/${deckData?.id}?track=false`;
 
-    copyToClipboard(copyText, (res) => {
-      if (res.status === "success") {
-        setTimeout(() => {
-          addAlert({
-            type: "success",
-            message: res.message,
-          });
-        }, 500);
+    await actions.copyTextToClipboard(copyText);
+
+    setTimeout(() => {
+      addAlert({
+        type: "success",
+        message: "Copied!",
+      });
+    }, 500);
+  };
+
+  const ddOptions = [
+    {
+      label: "Analytics",
+      onClick: () => handleViewAnalytics(),
+    },
+    {
+      label: "Edit",
+      onClick: () => handleEditDealDeck(),
+    },
+    {
+      label: "Delete",
+      onClick: () => handleDeleteDeck(),
+    },
+  ];
+
+  const handleDeleteDeck = async () => {
+    const url = `${API_BASE_URL}/inward/api/hubspot/deck/delete`;
+    try {
+      const response = await hubspot.fetch(url, {
+        method: "POST",
+        body: { dealId },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      if (res.status === "error") {
-        addAlert({
-          type: "info",
-          message: `Copy share link ${copyText}`,
-        });
-      }
+
+      const data = await response.json();
+      fetchDealDeckData(dealId);
+
+      addAlert({
+        type: "success",
+        message: "DealDeck deleted successfully",
+      });
+    } catch (error) {
+      addAlert({
+        type: "danger",
+        message: "Error deleting DealDeck",
+      });
+      console.error("An error occurred: ", error);
+    }
+  };
+
+  const handleViewAnalytics = () => {
+    const url = `${CLIENT_BASE_URL}/deck/detailsView/${deckData?.id}`;
+    // window.open(url, "_blank");
+    actions.openIframeModal({
+      uri: url,
+      height: 800,
+      width: 1200,
+    });
+  };
+
+  const handleEditDealDeck = () => {
+    const url = `${CLIENT_BASE_URL}/deck/edit/${deckData?.id}`;
+
+    actions.openIframeModal({
+      uri: url,
+      height: 800,
+      width: 1200,
     });
   };
 

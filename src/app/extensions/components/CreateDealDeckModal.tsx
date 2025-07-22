@@ -11,17 +11,17 @@ import {
   ModalFooter,
   Select,
 } from "@hubspot/ui-extensions";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { IDeal, ITemplates } from "../types/card";
 
 interface IProps {
   actions: any;
   deal?: IDeal;
-  setIsConnected: Dispatch<SetStateAction<boolean>>;
+  fetchDealDeckData: (dealId: number) => Promise<void>;
 }
 
-const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
+const CreateDealDeckModal = ({ actions, deal, fetchDealDeckData }: IProps) => {
   const [template, setTemplate] = useState<string | null>(null);
   const [tempErrorMsg, setTempErrorMsg] = useState("");
   const [dealErrorMsg, setDealErrorMsg] = useState("");
@@ -100,6 +100,7 @@ const CreateDealDeckModal = ({ actions, deal, setIsConnected }: IProps) => {
         message: "DealDeck created successfully",
       });
 
+      fetchDealDeckData(deal?.id!);
       setTimeout(() => {
         actions.closeOverlay("create-dealdeck-modal");
       }, 1000);
