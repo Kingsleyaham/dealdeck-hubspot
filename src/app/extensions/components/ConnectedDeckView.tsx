@@ -1,7 +1,7 @@
 import { Box, Button, Dropdown, Flex, hubspot, Icon, Link, Text } from "@hubspot/ui-extensions";
 import React from "react";
 import { API_BASE_URL, CLIENT_BASE_URL } from "../config";
-import { DECK_VIEW_URL } from "../constants";
+import { DECK_EDIT_URL, DECK_VIEW_URL } from "../constants";
 import { IDealDeckData } from "../types/card";
 import { toTitleCase } from "../utils/helper";
 
@@ -32,10 +32,7 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
       label: "Analytics",
       onClick: () => handleViewAnalytics(),
     },
-    {
-      label: "Edit",
-      onClick: () => handleEditDealDeck(),
-    },
+
     {
       label: "Delete",
       onClick: () => handleDeleteDeck(),
@@ -71,18 +68,8 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
   };
 
   const handleViewAnalytics = () => {
-    const url = `${CLIENT_BASE_URL}/deck/detailsView/${deckData?.id}`;
+    const url = `${CLIENT_BASE_URL}/int/analytics/${deckData?.id}`;
     // window.open(url, "_blank");
-    actions.openIframeModal({
-      uri: url,
-      height: 800,
-      width: 1200,
-    });
-  };
-
-  const handleEditDealDeck = () => {
-    const url = `${CLIENT_BASE_URL}/deck/edit/${deckData?.id}`;
-
     actions.openIframeModal({
       uri: url,
       height: 800,
@@ -94,6 +81,7 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
     <Flex direction="column" gap="sm">
       <Flex direction="row" gap="xs" align="center" alignSelf="center" justify="start">
         <Link href={`${DECK_VIEW_URL}/${deckData?.id}?track=false`}>View DealDeck&nbsp;</Link>
+        <Link href={`${DECK_EDIT_URL}/${deckData?.id}`}>Edit DealDeck&nbsp;</Link>
       </Flex>
       <Box>
         <Box>
