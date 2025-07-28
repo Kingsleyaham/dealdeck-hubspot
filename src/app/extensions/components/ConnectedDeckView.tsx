@@ -67,14 +67,40 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
     }
   };
 
-  const handleViewAnalytics = () => {
-    const url = `${CLIENT_BASE_URL}/int/analytics/${deckData?.id}`;
+  const handleViewAnalytics = async () => {
+    const token = (await fetchAnalyticsAuth())?.apiKey;
+    const encodeDeckTitle = encodeURIComponent(deckData?.name ?? "");
+    const iframeUrl = `${CLIENT_BASE_URL}/int/analytics/${deckData?.id}?deckId=${deckData?.id}&apiKey=${token}&deckTitle=${encodeDeckTitle}`;
+
     // window.open(url, "_blank");
     actions.openIframeModal({
-      uri: url,
+      uri: iframeUrl,
       height: 800,
       width: 1200,
     });
+  };
+
+  const fetchAnalyticsAuth = async () => {
+    const url = `${API_BASE_URL}/inward/api/hubspot/token/get`;
+    try {
+      const response = await hubspot.fetch(url, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = (await response.json()) as { apiKey: string; organizationId: string; expiresInMinutes: number };
+
+      return data;
+    } catch (error) {
+      addAlert({
+        type: "danger",
+        message: "Error occurred authenticating analytics view",
+      });
+      console.error("An error occurred: ", error);
+    }
   };
 
   return (
