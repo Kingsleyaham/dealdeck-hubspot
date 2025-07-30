@@ -75,8 +75,10 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
     // window.open(url, "_blank");
     actions.openIframeModal({
       uri: iframeUrl,
-      height: 800,
-      width: 1200,
+      height: 1000,
+      width: 1000,
+      title: "DealDeck Analytics",
+      flush: true,
     });
   };
 
