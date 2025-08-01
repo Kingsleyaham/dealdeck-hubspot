@@ -3,13 +3,12 @@ import {
   Flex,
   Form,
   hubspot,
-  Input,
   LoadingButton,
   logger,
   Modal,
   ModalBody,
   ModalFooter,
-  Select,
+  Select
 } from "@hubspot/ui-extensions";
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
@@ -24,9 +23,7 @@ interface IProps {
 const CreateDealDeckModal = ({ actions, deal, fetchDealDeckData }: IProps) => {
   const [template, setTemplate] = useState<string | null>(null);
   const [tempErrorMsg, setTempErrorMsg] = useState("");
-  const [dealErrorMsg, setDealErrorMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
-  const [dealValid, setDealValid] = useState(true);
   const [dealName, setDealName] = useState("");
   const [formIsValid, setFormIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -120,32 +117,11 @@ const CreateDealDeckModal = ({ actions, deal, fetchDealDeckData }: IProps) => {
       <ModalBody>
         <Flex direction="column">
           <Form>
-            <Input
-              label="Deal name"
-              name="customerName"
-              placeholder="Enter deal name"
-              required
-              validationMessage={dealErrorMsg}
-              error={!dealValid}
-              onChange={(value) => {
-                setDealName(value);
-              }}
-              onInput={(value) => {
-                if (value === "") {
-                  setDealErrorMsg("Deal Name is required");
-                  setDealValid(false);
-                } else {
-                  setTempErrorMsg("");
-                  setDealValid(true);
-                }
-              }}
-              value={dealName}
-            ></Input>
 
             <Select
               label="Select Template"
               name="template"
-              tooltip="Select a template from prebuilt templates"
+              tooltip="Templates can only be managed and edited from the DealDeck web app (app.dealdeck.ai)"
               required={true}
               error={!isValid}
               validationMessage={tempErrorMsg}
@@ -173,7 +149,7 @@ const CreateDealDeckModal = ({ actions, deal, fetchDealDeckData }: IProps) => {
           onClick={handleSubmit}
           loading={isSubmitting}
         >
-          Save
+          Create
         </LoadingButton>
       </ModalFooter>
     </Modal>

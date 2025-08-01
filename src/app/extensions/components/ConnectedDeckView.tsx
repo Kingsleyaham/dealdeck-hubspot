@@ -159,7 +159,7 @@ const ConnectedDeckView = ({ addAlert, deckData, fetchDealDeckData, dealId, acti
         </Box>
       </Box>
       <Flex direction="row" gap="xs">
-        <Button size="sm" variant="secondary" onClick={handleCopyShareLink}>
+        <Button size="sm" variant="primary" onClick={handleCopyShareLink}>
           Copy share link
         </Button>
         <Dropdown options={ddOptions} variant="secondary" buttonSize="md" buttonText="More" />
